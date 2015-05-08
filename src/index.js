@@ -1,5 +1,6 @@
 var exec = require('child_process').exec
 const semver = require('semver')
+const jf = require('jsonfile')
 const auto_updater = 'TODO :D' //require('auto-updater')
 
 export class Update {
@@ -49,9 +50,14 @@ export class Update {
       let zipUrl = ''
 
       // 4. Create local json file with .zip URL.
+      let localFile = 'gh_updates.json'
+      let localFileObj = {url: zipUrl}
+      jf.writeFile(localFile, localFileObj, function () {
+
+      })
 
       // 5. Set local url with file:// protocol in auto_updater.
-      let localUrl = 'file://'
+      let localUrl = 'file://' + localFile
       auto_updater.setFeedUrl(localUrl)
 
       // 6. Check for updates with auto_updater.

@@ -10,6 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var exec = require('child_process').exec;
 var semver = require('semver');
+var jf = require('jsonfile');
 var auto_updater = 'TODO :D'; //require('auto-updater')
 
 var Update = (function () {
@@ -65,9 +66,12 @@ var Update = (function () {
         var zipUrl = '';
 
         // 4. Create local json file with .zip URL.
+        var localFile = 'gh_updates.json';
+        var localFileObj = { url: zipUrl };
+        jf.writeFile(localFile, localFileObj, function () {});
 
         // 5. Set local url with file:// protocol in auto_updater.
-        var localUrl = 'file://';
+        var localUrl = 'file://' + localFile;
         auto_updater.setFeedUrl(localUrl);
 
         // 6. Check for updates with auto_updater.
