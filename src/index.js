@@ -1,12 +1,17 @@
 var exec = require('child_process').exec
 const semver = require('semver')
 const jf = require('jsonfile')
-const auto_updater = 'TODO :D' //require('auto-updater')
+const path = require('path')
+const os = require('os')
+const auto_updater = require('auto-updater')
 
 export class Update {
 
-  constructor (gh) {
+  constructor (gh, cb) {
     this.repo = gh.repo
+    this.storage = gh.storage
+
+    cb(auto_updater)
   }
 
   _getTags (cb) {
@@ -47,13 +52,17 @@ export class Update {
       // There is a new version!
 
       // 3. Get .zip URL from Github release.
-      let zipUrl = ''
+      let repo_name = this.repo.split(':').pop().slice(0, -4)
+      let platform = os.platform()
+      let arch = os.arch()
+      let filename = repo_name.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip'
+      let zipUrl = 'https://github.com/' + repo_name + '/releases/download/' + latest + '/' + filename
 
       // 4. Create local json file with .zip URL.
-      let localFile = 'gh_updates.json'
+      let localFile = path.join(this.storage, 'gh_updates.json')
       let localFileObj = {url: zipUrl}
-      jf.writeFile(localFile, localFileObj, function () {
-
+      jf.writeFile(localFile, localFileObj, function (err) {
+        if (err) throw new Error('Unable to save local update file.')
       })
 
       // 5. Set local url with file:// protocol in auto_updater.

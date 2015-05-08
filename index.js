@@ -11,13 +11,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var exec = require('child_process').exec;
 var semver = require('semver');
 var jf = require('jsonfile');
-var auto_updater = 'TODO :D'; //require('auto-updater')
+var path = require('path');
+var os = require('os');
+var auto_updater = require('auto-updater');
 
 var Update = (function () {
-  function Update(gh) {
+  function Update(gh, cb) {
     _classCallCheck(this, Update);
 
     this.repo = gh.repo;
+    this.storage = gh.storage;
+
+    cb(auto_updater);
   }
 
   _createClass(Update, [{
@@ -63,12 +68,18 @@ var Update = (function () {
         // There is a new version!
 
         // 3. Get .zip URL from Github release.
-        var zipUrl = '';
+        var repo_name = this.repo.split(':').pop().slice(0, -4);
+        var platform = os.platform();
+        var arch = os.arch();
+        var filename = repo_name.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip';
+        var zipUrl = 'https://github.com/' + repo_name + '/releases/download/' + latest + '/' + filename;
 
         // 4. Create local json file with .zip URL.
-        var localFile = 'gh_updates.json';
+        var localFile = path.join(this.storage, 'gh_updates.json');
         var localFileObj = { url: zipUrl };
-        jf.writeFile(localFile, localFileObj, function () {});
+        jf.writeFile(localFile, localFileObj, function (err) {
+          if (err) throw new Error('Unable to save local update file.');
+        });
 
         // 5. Set local url with file:// protocol in auto_updater.
         var localUrl = 'file://' + localFile;
