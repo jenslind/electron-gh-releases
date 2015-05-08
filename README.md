@@ -14,13 +14,15 @@ electron-gh-releases-v1.0.0-darwin-x64.zip
 #### Usage
 ```javascript
 var gh_releases = require('electron-gh-releases')
+var auto_updater = null
 
-var update = new gh_releases({repo: 'jenslind/electron-gh-releases'}, app,
-  function (auto_updater) {
-    auto_updater.on('update-downloaded', function (e, rNotes, rName, rDate, uUrl, quitAndUpdate) {
-      // Install the update
-      quitAndUpdate()
-  })
+var update = new gh_releases({repo: 'jenslind/electron-gh-releases'}, app, function (updater) {
+  auto_updater = updater
+})
+
+// Install the update
+auto_updater.on('update-downloaded', function (e, rNotes, rName, rDate, uUrl, quitAndUpdate) {
+  quitAndUpdate()
 })
 
 // Check for updates
