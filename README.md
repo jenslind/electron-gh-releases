@@ -3,9 +3,13 @@
 
 #### Zip file naming
 The zip file uploaded on Github must be named in a special way
-`REPO_NAME-VERSION_TAG-PLATFORM-ARCH.zip`
+```
+REPO_NAME-VERSION_TAG-PLATFORM-ARCH.zip
+```
 example:
-`electron-gh-releases-v1.0.0-darwin-x64.zip`
+```
+electron-gh-releases-v1.0.0-darwin-x64.zip
+```
 
 #### Usage
 ```
