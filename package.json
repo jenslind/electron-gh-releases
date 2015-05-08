@@ -4,10 +4,20 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-babel": "^5.0.0",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt-contrib-watch": "^0.6.1",
+    "standard": "^3.7.3"
   },
   "dependencies": {
     "jsonfile": "^2.0.0",
     "semver": "^4.3.4"
+  },
+  "standard": {
+    "ignore": [
+      "index.js",
+      "Gruntfile.js"
+    ]
+  },
+  "scripts": {
+    "test": "standard"
   }
 }

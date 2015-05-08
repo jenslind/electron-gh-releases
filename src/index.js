@@ -25,6 +25,7 @@ export class Update {
 
       // Get latest tags
       exec('git tag', {cwd: path.join(this.storage, this.repo.split(':').pop().slice(0, -4).split('/').pop())}, function (err, stdout, stderr) {
+        if (err) throw new Error('Unable to get version tags.')
         var tags = stdout.split('\n')
         tags.pop()
         cb(tags)
@@ -44,9 +45,9 @@ export class Update {
    */
   check () {
     // 1. Get latest released version from Github.
-    _getTags(function (tags) {
+    this._getTags(function (tags) {
       // Get the latest version
-      let current = _getCurrentVersion
+      let current = this._getCurrentVersion
 
       // Get latest tag
       // @TODO: Sort the tags!
