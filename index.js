@@ -20,6 +20,7 @@ var Update = (function () {
     _classCallCheck(this, Update);
 
     this.repo = gh.repo;
+    this.repoUrl = 'git@github.com:' + gh.repo + '.git';
     this.storage = app.getPath('userData');
     this.currentVersion = app.getVersion();
 
@@ -34,11 +35,11 @@ var Update = (function () {
      */
     value: function _getTags(cb) {
       // Clone repo
-      exec('git clone ' + this.repo, { cwd: this.storage }, function (err, stdout, stderr) {
+      exec('git clone ' + this.repoUrl, { cwd: this.storage }, function (err, stdout, stderr) {
         if (err) throw new Error('Failed to clone repo.');
 
         // Get latest tags
-        exec('git tag', { cwd: path.join(this.storage, this.repo.split(':').pop().slice(0, -4).split('/').pop()) }, function (err, stdout, stderr) {
+        exec('git tag', { cwd: path.join(this.storage, this.repo.split('/').pop()) }, function (err, stdout, stderr) {
           if (err) throw new Error('Unable to get version tags.');
           var tags = stdout.split('\n');
           tags.pop();
@@ -78,11 +79,10 @@ var Update = (function () {
         // There is a new version!
 
         // 3. Get .zip URL from Github release.
-        var repo_name = this.repo.split(':').pop().slice(0, -4);
         var platform = os.platform();
         var arch = os.arch();
-        var filename = repo_name.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip';
-        var zipUrl = 'https://github.com/' + repo_name + '/releases/download/' + latest + '/' + filename;
+        var filename = this.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip';
+        var zipUrl = 'https://github.com/' + this.repo + '/releases/download/' + latest + '/' + filename;
 
         // 4. Create local json file with .zip URL.
         var localFile = path.join(this.storage, 'gh_updates.json');

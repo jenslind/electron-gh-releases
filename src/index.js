@@ -9,6 +9,7 @@ export class Update {
 
   constructor (gh, app, cb) {
     this.repo = gh.repo
+    this.repoUrl = 'git@github.com:' + gh.repo + '.git'
     this.storage = app.getPath('userData')
     this.currentVersion = app.getVersion()
 
@@ -20,11 +21,11 @@ export class Update {
    */
   _getTags (cb) {
     // Clone repo
-    exec('git clone ' + this.repo, {cwd: this.storage}, function (err, stdout, stderr) {
+    exec('git clone ' + this.repoUrl, {cwd: this.storage}, function (err, stdout, stderr) {
       if (err) throw new Error('Failed to clone repo.')
 
       // Get latest tags
-      exec('git tag', {cwd: path.join(this.storage, this.repo.split(':').pop().slice(0, -4).split('/').pop())}, function (err, stdout, stderr) {
+      exec('git tag', {cwd: path.join(this.storage, this.repo.split('/').pop())}, function (err, stdout, stderr) {
         if (err) throw new Error('Unable to get version tags.')
         var tags = stdout.split('\n')
         tags.pop()
@@ -60,11 +61,10 @@ export class Update {
       // There is a new version!
 
       // 3. Get .zip URL from Github release.
-      let repo_name = this.repo.split(':').pop().slice(0, -4)
       let platform = os.platform()
       let arch = os.arch()
-      let filename = repo_name.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip'
-      let zipUrl = 'https://github.com/' + repo_name + '/releases/download/' + latest + '/' + filename
+      let filename = this.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip'
+      let zipUrl = 'https://github.com/' + this.repo + '/releases/download/' + latest + '/' + filename
 
       // 4. Create local json file with .zip URL.
       let localFile = path.join(this.storage, 'gh_updates.json')
