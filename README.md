@@ -12,7 +12,7 @@ electron-gh-releases-v1.0.0-darwin-x64.zip
 ```
 
 #### Usage
-```
+```javascript
 var gh_releases = require('electron-gh-releases')
 var update = new gh_releases({
   repo: 'git@github.com:jenslind/electron-gh-releases.git',
