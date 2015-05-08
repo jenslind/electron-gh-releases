@@ -1,4 +1,5 @@
 var exec = require('child_process').exec
+const semver = require('semver')
 const auto_updater = 'TODO :D' //require('auto-updater')
 
 export class Update {
@@ -35,20 +36,27 @@ export class Update {
       let current = _getCurrentVersion
 
       // Get latest tag
-      // @TODO: Would be nice to sort the tags here.
+      // @TODO: Sort the tags!
       let latest = tags.pop()
-    })
-    // 2. Compare with current version.
-    // 3. Get .zip URL from Github release.
-    // 4. Create local json file with .zip URL.
-    // 5. Set local url with file:// protocol in auto_updater.
-    // 6. Check for updates with auto_updater.
-  }
+      if (!semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.')
 
-  /**
-   * Relaunch and install new update.
-   */
-  install () {
-    // Run exit and instsall with auto_updater
+      // 2. Compare with current version.
+      if (semver.lt(latest, current)) return null
+
+      // There is a new version!
+
+      // 3. Get .zip URL from Github release.
+      let zipUrl = ''
+
+      // 4. Create local json file with .zip URL.
+
+      // 5. Set local url with file:// protocol in auto_updater.
+      let localUrl = 'file://'
+      auto_updater.setFeedUrl(localUrl)
+
+      // 6. Check for updates with auto_updater.
+      // Lets do this. :o
+      auto_updater.checkForUpdates()
+    })
   }
 }

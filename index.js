@@ -9,6 +9,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var exec = require('child_process').exec;
+var semver = require('semver');
 var auto_updater = 'TODO :D'; //require('auto-updater')
 
 var Update = (function () {
@@ -51,27 +52,32 @@ var Update = (function () {
         var current = _getCurrentVersion;
 
         // Get latest tag
-        // @TODO: Would be nice to sort the tags here.
+        // @TODO: Sort the tags!
         var latest = tags.pop();
+        if (!semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.');
+
+        // 2. Compare with current version.
+        if (semver.lt(latest, current)) return null;
+
+        // There is a new version!
+
+        // 3. Get .zip URL from Github release.
+        var zipUrl = '';
+
+        // 4. Create local json file with .zip URL.
+
+        // 5. Set local url with file:// protocol in auto_updater.
+        var localUrl = 'file://';
+        auto_updater.setFeedUrl(localUrl);
+
+        // 6. Check for updates with auto_updater.
+        // Lets do this. :o
+        auto_updater.checkForUpdates();
       });
     }
-  }, {
-    key: 'install',
-
-    /**
-     * Relaunch and install new update.
-     */
-    value: function install() {}
   }]);
 
   return Update;
 })();
 
 exports.Update = Update;
-// 2. Compare with current version.
-// 3. Get .zip URL from Github release.
-// 4. Create local json file with .zip URL.
-// 5. Set local url with file:// protocol in auto_updater.
-// 6. Check for updates with auto_updater.
-
-// Run exit and instsall with auto_updater
