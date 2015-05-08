@@ -16,12 +16,12 @@ var os = require('os');
 var auto_updater = require('auto-updater');
 
 var Update = (function () {
-  function Update(gh, cb) {
+  function Update(gh, app, cb) {
     _classCallCheck(this, Update);
 
     this.repo = gh.repo;
-    this.storage = gh.storage;
-    this.currentVersion = gh.current;
+    this.storage = app.getPath('userData');
+    this.currentVersion = app.getVersion();
 
     cb(auto_updater);
   }

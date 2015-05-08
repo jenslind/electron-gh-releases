@@ -7,10 +7,10 @@ const auto_updater = require('auto-updater')
 
 export class Update {
 
-  constructor (gh, cb) {
+  constructor (gh, app, cb) {
     this.repo = gh.repo
-    this.storage = gh.storage
-    this.currentVersion = gh.current
+    this.storage = app.getPath('userData')
+    this.currentVersion = app.getVersion()
 
     cb(auto_updater)
   }
