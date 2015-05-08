@@ -10,17 +10,21 @@ export class Update {
   constructor (gh, cb) {
     this.repo = gh.repo
     this.storage = gh.storage
+    this.currentVersion = gh.current
 
     cb(auto_updater)
   }
 
+  /**
+   * Get tags from this.repo
+   */
   _getTags (cb) {
     // Clone repo
-    exec('git clone ' + this.repo, function (err, stdout, stderr) {
+    exec('git clone ' + this.repo, {cwd: this.storage}, function (err, stdout, stderr) {
       if (err) throw new Error('Failed to clone repo.')
 
       // Get latest tags
-      exec('git tag', {cwd: 'drupal-shoot'}, function (err, stdout, stderr) {
+      exec('git tag', {cwd: path.join(this.storage, this.repo.split(':').pop().slice(0, -4).split('/').pop())}, function (err, stdout, stderr) {
         var tags = stdout.split('\n')
         tags.pop()
         cb(tags)
@@ -28,8 +32,11 @@ export class Update {
     })
   }
 
+  /**
+   * Get current version from app.
+   */
   _getCurrentVersion () {
-    return require('./package.json').version
+    return this.currentVersion
   }
 
   /**
