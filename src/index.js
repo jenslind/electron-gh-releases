@@ -21,16 +21,17 @@ export class Update {
    */
   _getTags (cb) {
     var self = this
+
     // Clone repo
     exec('git clone ' + this.repoUrl, {cwd: this.storage}, function (err, stdout, stderr) {
-      if (err) throw new Error('Failed to clone repo.')
+      if (err) cb(new Error('Failed to clone repo.'), null)
 
       // Get latest tags
       exec('git tag', {cwd: path.join(self.storage, self.repo.split('/').pop())}, function (err, stdout, stderr) {
-        if (err) throw new Error('Unable to get version tags.')
+        if (err) cb(new Error('Unable to get version tags.'), null)
         var tags = stdout.split('\n')
         tags.pop()
-        cb(tags)
+        cb(err, tags)
       })
     })
   }
@@ -45,17 +46,19 @@ export class Update {
   /**
    * Check for updates.
    */
-  check () {
+  check (cb) {
     var self = this
     // 1. Get latest released version from Github.
-    this._getTags(function (tags) {
+    this._getTags(function (err, tags) {
+      if (err) cb(new Error(err))
+
       // Get the latest version
       let current = self._getCurrentVersion
 
       // Get latest tag
       // @TODO: Sort the tags!
       let latest = tags.pop()
-      if (!latest || !semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.')
+      if (!latest || !semver.valid(semver.clean(latest))) cb(new Error('Could not find a valid release tag.'))
 
       // 2. Compare with current version.
       if (semver.lt(latest, current)) return null
@@ -72,7 +75,7 @@ export class Update {
       let localFile = path.join(self.storage, 'gh_updates.json')
       let localFileObj = {url: zipUrl}
       jf.writeFile(localFile, localFileObj, function (err) {
-        if (err) throw new Error('Unable to save local update file.')
+        if (err) cb(new Error('Unable to save local update file.'))
 
         // 5. Set local url with file:// protocol in auto_updater.
         let localUrl = 'file://' + localFile
@@ -81,6 +84,8 @@ export class Update {
         // 6. Check for updates with auto_updater.
         // Lets do this. :o
         auto_updater.checkForUpdates()
+
+        cb(null)
       })
     })
   }
