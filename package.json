@@ -19,5 +19,7 @@
   },
   "scripts": {
     "test": "standard"
-  }
+  },
+  "author": "Jens Lind <jens@jensl.se> (jenslind.org)",
+  "license": "MIT"
 }
