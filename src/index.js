@@ -67,12 +67,12 @@ export class Update {
       }
 
       // Get the latest version
-      let current = self._getCurrentVersion
+      let current = self._getCurrentVersion()
 
       // Get latest tag
       // @TODO: Sort the tags!
       let latest = tags.pop()
-      if (!latest || !semver.valid(semver.clean(latest))){
+      if (!latest || !semver.valid(semver.clean(latest))) {
         cb(new Error('Could not find a valid release tag.'))
         return
       }

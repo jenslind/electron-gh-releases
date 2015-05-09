@@ -85,7 +85,7 @@ var Update = (function () {
         }
 
         // Get the latest version
-        var current = self._getCurrentVersion;
+        var current = self._getCurrentVersion();
 
         // Get latest tag
         // @TODO: Sort the tags!
