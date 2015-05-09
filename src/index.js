@@ -24,11 +24,17 @@ export class Update {
 
     // Clone repo
     exec('git clone ' + this.repoUrl, {cwd: this.storage}, function (err, stdout, stderr) {
-      if (err) cb(new Error('Failed to clone repo.'), null)
+      if (err) {
+        cb(new Error('Failed to clone repo.'), null)
+        return
+      }
 
       // Get latest tags
       exec('git tag', {cwd: path.join(self.storage, self.repo.split('/').pop())}, function (err, stdout, stderr) {
-        if (err) cb(new Error('Unable to get version tags.'), null)
+        if (err) {
+          cb(new Error('Unable to get version tags.'), null)
+          return
+        }
         var tags = stdout.split('\n')
         tags.pop()
         cb(err, tags)
@@ -50,7 +56,15 @@ export class Update {
     var self = this
     // 1. Get latest released version from Github.
     this._getTags(function (err, tags) {
-      if (err) cb(new Error(err))
+      if (err) {
+        cb(new Error(err))
+        return
+      }
+
+      if (!tags) {
+        cb(null)
+        return
+      }
 
       // Get the latest version
       let current = self._getCurrentVersion
@@ -58,7 +72,10 @@ export class Update {
       // Get latest tag
       // @TODO: Sort the tags!
       let latest = tags.pop()
-      if (!latest || !semver.valid(semver.clean(latest))) cb(new Error('Could not find a valid release tag.'))
+      if (!latest || !semver.valid(semver.clean(latest))){
+        cb(new Error('Could not find a valid release tag.'))
+        return
+      }
 
       // 2. Compare with current version.
       if (semver.lt(latest, current)) return null
@@ -75,7 +92,10 @@ export class Update {
       let localFile = path.join(self.storage, 'gh_updates.json')
       let localFileObj = {url: zipUrl}
       jf.writeFile(localFile, localFileObj, function (err) {
-        if (err) cb(new Error('Unable to save local update file.'))
+        if (err) {
+          cb(new Error('Unable to save local update file.'))
+          return
+        }
 
         // 5. Set local url with file:// protocol in auto_updater.
         let localUrl = 'file://' + localFile

@@ -38,11 +38,17 @@ var Update = (function () {
 
       // Clone repo
       exec('git clone ' + this.repoUrl, { cwd: this.storage }, function (err, stdout, stderr) {
-        if (err) cb(new Error('Failed to clone repo.'), null);
+        if (err) {
+          cb(new Error('Failed to clone repo.'), null);
+          return;
+        }
 
         // Get latest tags
         exec('git tag', { cwd: path.join(self.storage, self.repo.split('/').pop()) }, function (err, stdout, stderr) {
-          if (err) cb(new Error('Unable to get version tags.'), null);
+          if (err) {
+            cb(new Error('Unable to get version tags.'), null);
+            return;
+          }
           var tags = stdout.split('\n');
           tags.pop();
           cb(err, tags);
@@ -68,7 +74,15 @@ var Update = (function () {
       var self = this;
       // 1. Get latest released version from Github.
       this._getTags(function (err, tags) {
-        if (err) cb(new Error(err));
+        if (err) {
+          cb(new Error(err));
+          return;
+        }
+
+        if (!tags) {
+          cb(null);
+          return;
+        }
 
         // Get the latest version
         var current = self._getCurrentVersion;
@@ -76,7 +90,10 @@ var Update = (function () {
         // Get latest tag
         // @TODO: Sort the tags!
         var latest = tags.pop();
-        if (!latest || !semver.valid(semver.clean(latest))) cb(new Error('Could not find a valid release tag.'));
+        if (!latest || !semver.valid(semver.clean(latest))) {
+          cb(new Error('Could not find a valid release tag.'));
+          return;
+        }
 
         // 2. Compare with current version.
         if (semver.lt(latest, current)) return null;
@@ -93,7 +110,10 @@ var Update = (function () {
         var localFile = path.join(self.storage, 'gh_updates.json');
         var localFileObj = { url: zipUrl };
         jf.writeFile(localFile, localFileObj, function (err) {
-          if (err) cb(new Error('Unable to save local update file.'));
+          if (err) {
+            cb(new Error('Unable to save local update file.'));
+            return;
+          }
 
           // 5. Set local url with file:// protocol in auto_updater.
           var localUrl = 'file://' + localFile;
