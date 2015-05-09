@@ -89,15 +89,15 @@ var Update = (function () {
         var localFileObj = { url: zipUrl };
         jf.writeFile(localFile, localFileObj, function (err) {
           if (err) throw new Error('Unable to save local update file.');
+
+          // 5. Set local url with file:// protocol in auto_updater.
+          var localUrl = 'file://' + localFile;
+          auto_updater.setFeedUrl(localUrl);
+
+          // 6. Check for updates with auto_updater.
+          // Lets do this. :o
+          auto_updater.checkForUpdates();
         });
-
-        // 5. Set local url with file:// protocol in auto_updater.
-        var localUrl = 'file://' + localFile;
-        auto_updater.setFeedUrl(localUrl);
-
-        // 6. Check for updates with auto_updater.
-        // Lets do this. :o
-        auto_updater.checkForUpdates();
       });
     }
   }]);
