@@ -34,12 +34,13 @@ var Update = (function () {
      * Get tags from this.repo
      */
     value: function _getTags(cb) {
+      var self = this;
       // Clone repo
       exec('git clone ' + this.repoUrl, { cwd: this.storage }, function (err, stdout, stderr) {
         if (err) throw new Error('Failed to clone repo.');
 
         // Get latest tags
-        exec('git tag', { cwd: path.join(this.storage, this.repo.split('/').pop()) }, function (err, stdout, stderr) {
+        exec('git tag', { cwd: path.join(self.storage, self.repo.split('/').pop()) }, function (err, stdout, stderr) {
           if (err) throw new Error('Unable to get version tags.');
           var tags = stdout.split('\n');
           tags.pop();
@@ -63,15 +64,16 @@ var Update = (function () {
      * Check for updates.
      */
     value: function check() {
+      var self = this;
       // 1. Get latest released version from Github.
       this._getTags(function (tags) {
         // Get the latest version
-        var current = this._getCurrentVersion;
+        var current = self._getCurrentVersion;
 
         // Get latest tag
         // @TODO: Sort the tags!
         var latest = tags.pop();
-        if (!semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.');
+        if (!latest || !semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.');
 
         // 2. Compare with current version.
         if (semver.lt(latest, current)) return null;
@@ -81,11 +83,11 @@ var Update = (function () {
         // 3. Get .zip URL from Github release.
         var platform = os.platform();
         var arch = os.arch();
-        var filename = this.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip';
-        var zipUrl = 'https://github.com/' + this.repo + '/releases/download/' + latest + '/' + filename;
+        var filename = self.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip';
+        var zipUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/' + filename;
 
         // 4. Create local json file with .zip URL.
-        var localFile = path.join(this.storage, 'gh_updates.json');
+        var localFile = path.join(self.storage, 'gh_updates.json');
         var localFileObj = { url: zipUrl };
         jf.writeFile(localFile, localFileObj, function (err) {
           if (err) throw new Error('Unable to save local update file.');

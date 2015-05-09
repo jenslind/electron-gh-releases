@@ -20,12 +20,13 @@ export class Update {
    * Get tags from this.repo
    */
   _getTags (cb) {
+    var self = this
     // Clone repo
     exec('git clone ' + this.repoUrl, {cwd: this.storage}, function (err, stdout, stderr) {
       if (err) throw new Error('Failed to clone repo.')
 
       // Get latest tags
-      exec('git tag', {cwd: path.join(this.storage, this.repo.split('/').pop())}, function (err, stdout, stderr) {
+      exec('git tag', {cwd: path.join(self.storage, self.repo.split('/').pop())}, function (err, stdout, stderr) {
         if (err) throw new Error('Unable to get version tags.')
         var tags = stdout.split('\n')
         tags.pop()
@@ -45,15 +46,16 @@ export class Update {
    * Check for updates.
    */
   check () {
+    var self = this
     // 1. Get latest released version from Github.
     this._getTags(function (tags) {
       // Get the latest version
-      let current = this._getCurrentVersion
+      let current = self._getCurrentVersion
 
       // Get latest tag
       // @TODO: Sort the tags!
       let latest = tags.pop()
-      if (!semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.')
+      if (!latest || !semver.valid(semver.clean(latest))) throw new Error('Could not find a valid release tag.')
 
       // 2. Compare with current version.
       if (semver.lt(latest, current)) return null
@@ -63,11 +65,11 @@ export class Update {
       // 3. Get .zip URL from Github release.
       let platform = os.platform()
       let arch = os.arch()
-      let filename = this.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip'
-      let zipUrl = 'https://github.com/' + this.repo + '/releases/download/' + latest + '/' + filename
+      let filename = self.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip'
+      let zipUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/' + filename
 
       // 4. Create local json file with .zip URL.
-      let localFile = path.join(this.storage, 'gh_updates.json')
+      let localFile = path.join(self.storage, 'gh_updates.json')
       let localFileObj = {url: zipUrl}
       jf.writeFile(localFile, localFileObj, function (err) {
         if (err) throw new Error('Unable to save local update file.')
@@ -75,7 +77,7 @@ export class Update {
         // 5. Set local url with file:// protocol in auto_updater.
         let localUrl = 'file://' + localFile
         auto_updater.setFeedUrl(localUrl)
-        
+
         // 6. Check for updates with auto_updater.
         // Lets do this. :o
         auto_updater.checkForUpdates()
