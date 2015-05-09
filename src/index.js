@@ -57,12 +57,12 @@ export class Update {
     // 1. Get latest released version from Github.
     this._getTags(function (err, tags) {
       if (err) {
-        cb(new Error(err))
+        cb(new Error(err), false)
         return
       }
 
       if (!tags) {
-        cb(null)
+        cb(null, false)
         return
       }
 
@@ -78,7 +78,10 @@ export class Update {
       }
 
       // 2. Compare with current version.
-      if (semver.lt(latest, current)) return null
+      if (semver.lt(latest, current)) {
+        cb(null, false)
+        return
+      }
 
       // There is a new version!
 
@@ -93,7 +96,7 @@ export class Update {
       let localFileObj = {url: zipUrl}
       jf.writeFile(localFile, localFileObj, function (err) {
         if (err) {
-          cb(new Error('Unable to save local update file.'))
+          cb(new Error('Unable to save local update file.'), false)
           return
         }
 
@@ -101,12 +104,17 @@ export class Update {
         let localUrl = 'file://' + localFile
         auto_updater.setFeedUrl(localUrl)
 
-        // 6. Check for updates with auto_updater.
-        // Lets do this. :o
-        auto_updater.checkForUpdates()
-
-        cb(null)
+        cb(null, true)
       })
     })
+  }
+
+  /**
+   * Download latest release.
+   */
+  download () {
+    // Run auto_updater
+    // Lets do this. :o
+    auto_updater.checkForUpdates()
   }
 }

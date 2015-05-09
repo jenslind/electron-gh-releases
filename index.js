@@ -75,12 +75,12 @@ var Update = (function () {
       // 1. Get latest released version from Github.
       this._getTags(function (err, tags) {
         if (err) {
-          cb(new Error(err));
+          cb(new Error(err), false);
           return;
         }
 
         if (!tags) {
-          cb(null);
+          cb(null, false);
           return;
         }
 
@@ -96,7 +96,10 @@ var Update = (function () {
         }
 
         // 2. Compare with current version.
-        if (semver.lt(latest, current)) return null;
+        if (semver.lt(latest, current)) {
+          cb(null, false);
+          return;
+        }
 
         // There is a new version!
 
@@ -111,7 +114,7 @@ var Update = (function () {
         var localFileObj = { url: zipUrl };
         jf.writeFile(localFile, localFileObj, function (err) {
           if (err) {
-            cb(new Error('Unable to save local update file.'));
+            cb(new Error('Unable to save local update file.'), false);
             return;
           }
 
@@ -119,13 +122,20 @@ var Update = (function () {
           var localUrl = 'file://' + localFile;
           auto_updater.setFeedUrl(localUrl);
 
-          // 6. Check for updates with auto_updater.
-          // Lets do this. :o
-          auto_updater.checkForUpdates();
-
-          cb(null);
+          cb(null, true);
         });
       });
+    }
+  }, {
+    key: 'download',
+
+    /**
+     * Download latest release.
+     */
+    value: function download() {
+      // Run auto_updater
+      // Lets do this. :o
+      auto_updater.checkForUpdates();
     }
   }]);
 

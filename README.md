@@ -24,7 +24,9 @@ var update = new gh_releases({repo: 'jenslind/electron-gh-releases'}, app, funct
 })
 
 // Check for updates
-update.check(function (err) {
-
+update.check(function (err, update) {
+  if (!err && update) {
+    update.download()
+  }
 })
 ```
