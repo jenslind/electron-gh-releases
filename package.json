@@ -8,7 +8,7 @@
     "standard": "^3.7.3"
   },
   "dependencies": {
-    "jsonfile": "^2.0.0",
+    "got": "^3.2.0",
     "semver": "^4.3.4"
   },
   "standard": {

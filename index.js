@@ -10,10 +10,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var exec = require('child_process').exec;
 var semver = require('semver');
-var jf = require('jsonfile');
 var path = require('path');
 var os = require('os');
 var auto_updater = require('auto-updater');
+var got = require('got');
 
 var Update = (function () {
   function Update(gh, app, cb) {
@@ -103,24 +103,18 @@ var Update = (function () {
 
         // There is a new version!
 
-        // 3. Get .zip URL from Github release.
-        var platform = os.platform();
-        var arch = os.arch();
-        var filename = self.repo.split('/').pop() + '-' + latest + '-' + platform + '-' + arch + '.zip';
-        var zipUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/' + filename;
+        // 3. Get feed url from gh release.
+        var feedUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/auto_updater.json';
 
-        // 4. Create local json file with .zip URL.
-        var localFile = path.join(self.storage, 'gh_updates.json');
-        var localFileObj = { url: zipUrl };
-        jf.writeFile(localFile, localFileObj, function (err) {
-          if (err) {
-            cb(new Error('Unable to save local update file.'), false);
+        // 4. Make sure feedUrl exists
+        got.head(feedUrl, function (err, data, res) {
+          if (err || res.statusCode !== 200) {
+            cb(new Error('Could not find feed URL.'), false);
             return;
           }
 
-          // 5. Set local url with file:// protocol in auto_updater.
-          var localUrl = 'file://' + localFile;
-          auto_updater.setFeedUrl(localUrl);
+          // 5. Set feedUrl in auto_updater.
+          auto_updater.setFeedUrl(feedUrl);
 
           cb(null, true);
         });
