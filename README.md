@@ -41,7 +41,7 @@ update.check(function (err, status) {
 `status` - **Boolean** Is true if a new version is available.
 
 #### download()
-> Runs Electrons checkForUpdates() method. This method should only be called if check() returns true.
+> Runs Electrons [checkForUpdates()](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#autoupdatercheckforupdates) method. This method should only be called if check() returns true.
 
 ## License
 MIT
