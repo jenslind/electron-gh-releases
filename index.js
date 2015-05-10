@@ -13,6 +13,7 @@ var semver = require('semver');
 var path = require('path');
 var auto_updater = require('auto-updater');
 var got = require('got');
+var rimraf = require('rimraf');
 
 var Update = (function () {
   function Update(gh, app, cb) {
@@ -50,7 +51,16 @@ var Update = (function () {
           }
           var tags = stdout.split('\n');
           tags.pop();
-          cb(err, tags);
+
+          // Cleanup time, remove cloned repo.
+          rimraf(path.join(self.storage, self.repo.split('/').pop()), function (err) {
+            if (err) {
+              cb(new Error('Unable to remove cloned repo.'), null);
+              return;
+            }
+
+            cb(err, tags);
+          });
         });
       });
     }

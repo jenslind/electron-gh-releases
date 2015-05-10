@@ -3,6 +3,7 @@ const semver = require('semver')
 const path = require('path')
 const auto_updater = require('auto-updater')
 const got = require('got')
+const rimraf = require('rimraf')
 
 export default class Update {
 
@@ -36,7 +37,16 @@ export default class Update {
         }
         var tags = stdout.split('\n')
         tags.pop()
-        cb(err, tags)
+
+        // Cleanup time, remove cloned repo.
+        rimraf(path.join(self.storage, self.repo.split('/').pop()), function (err) {
+          if (err) {
+            cb(new Error('Unable to remove cloned repo.'), null)
+            return
+          }
+
+          cb(err, tags)
+        })
       })
     })
   }
