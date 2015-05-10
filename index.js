@@ -11,7 +11,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var exec = require('child_process').exec;
 var semver = require('semver');
 var path = require('path');
-var os = require('os');
 var auto_updater = require('auto-updater');
 var got = require('got');
 
@@ -96,7 +95,7 @@ var Update = (function () {
         }
 
         // 2. Compare with current version.
-        if (semver.lt(latest, current)) {
+        if (semver.lte(latest, current)) {
           cb(null, false);
           return;
         }
@@ -109,7 +108,7 @@ var Update = (function () {
         // 4. Make sure feedUrl exists
         got.head(feedUrl, function (err, data, res) {
           if (err || res.statusCode !== 200) {
-            cb(new Error('Could not find feed URL.'), false);
+            cb(new Error('Could not get feed URL.'), false);
             return;
           }
 
