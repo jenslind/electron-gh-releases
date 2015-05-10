@@ -90,7 +90,7 @@ var Update = (function () {
         // @TODO: Sort the tags!
         var latest = tags.pop();
         if (!latest || !semver.valid(semver.clean(latest))) {
-          cb(new Error('Could not find a valid release tag.'));
+          cb(new Error('Could not find a valid release tag.'), false);
           return;
         }
 
