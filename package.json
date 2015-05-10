@@ -8,10 +8,8 @@
     "standard": "^3.7.3"
   },
   "dependencies": {
-    "finalhandler": "^0.3.5",
     "jsonfile": "^2.0.0",
-    "semver": "^4.3.4",
-    "serve-static": "^1.9.2"
+    "semver": "^4.3.4"
   },
   "standard": {
     "ignore": [

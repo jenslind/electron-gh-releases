@@ -14,9 +14,6 @@ var jf = require('jsonfile');
 var path = require('path');
 var os = require('os');
 var auto_updater = require('auto-updater');
-var finalhandler = require('finalhandler');
-var http = require('http');
-var serveStatic = require('serve-static');
 
 var Update = (function () {
   function Update(gh, app, cb) {
@@ -68,28 +65,6 @@ var Update = (function () {
       return this.currentVersion;
     }
   }, {
-    key: '_localServer',
-
-    /**
-     * Local webserver to serve download url.
-     */
-    value: function _localServer(cb) {
-      var serve = serveStatic(path.join(this.storage, 'gh_releases'));
-
-      // Create server
-      var server = http.createServer(function (req, res) {
-        var done = finalhandler(req, res);
-        serve(req, res, done);
-      });
-
-      // Listen
-      server.listen(0);
-
-      server.on('listening', function () {
-        cb(server.address().port);
-      });
-    }
-  }, {
     key: 'check',
 
     /**
@@ -135,7 +110,7 @@ var Update = (function () {
         var zipUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/' + filename;
 
         // 4. Create local json file with .zip URL.
-        var localFile = path.join(self.storage, 'gh_releases/gh_updates.json');
+        var localFile = path.join(self.storage, 'gh_updates.json');
         var localFileObj = { url: zipUrl };
         jf.writeFile(localFile, localFileObj, function (err) {
           if (err) {
@@ -143,12 +118,11 @@ var Update = (function () {
             return;
           }
 
-          // 5. Setup temp local webserver to serve the feedurl
-          self._localServer(function (port) {
-            var localUrl = 'http://127.0.0.1:' + port + localFile;
-            auto_updater.setFeedUrl(localUrl);
-            cb(null, true);
-          });
+          // 5. Set local url with file:// protocol in auto_updater.
+          var localUrl = 'file://' + localFile;
+          auto_updater.setFeedUrl(localUrl);
+
+          cb(null, true);
         });
       });
     }

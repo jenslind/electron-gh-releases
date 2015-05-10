@@ -4,9 +4,6 @@ const jf = require('jsonfile')
 const path = require('path')
 const os = require('os')
 const auto_updater = require('auto-updater')
-const finalhandler = require('finalhandler')
-const http = require('http')
-const serveStatic = require('serve-static')
 
 export class Update {
 
@@ -53,26 +50,6 @@ export class Update {
   }
 
   /**
-   * Local webserver to serve download url.
-   */
-  _localServer (cb) {
-    let serve = serveStatic(path.join(this.storage, 'gh_releases'))
-
-    // Create server
-    let server = http.createServer(function (req, res) {
-      let done = finalhandler(req, res)
-      serve(req, res, done)
-    })
-
-    // Listen
-    server.listen(0)
-
-    server.on('listening', function () {
-      cb(server.address().port)
-    })
-  }
-
-  /**
    * Check for updates.
    */
   check (cb) {
@@ -115,7 +92,7 @@ export class Update {
       let zipUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/' + filename
 
       // 4. Create local json file with .zip URL.
-      let localFile = path.join(self.storage, 'gh_releases/gh_updates.json')
+      let localFile = path.join(self.storage, 'gh_updates.json')
       let localFileObj = {url: zipUrl}
       jf.writeFile(localFile, localFileObj, function (err) {
         if (err) {
@@ -123,12 +100,11 @@ export class Update {
           return
         }
 
-        // 5. Setup temp local webserver to serve the feedurl
-        self._localServer(function (port) {
-          let localUrl = 'http://127.0.0.1:' + port + localFile
-          auto_updater.setFeedUrl(localUrl)
-          cb(null, true)
-        })
+        // 5. Set local url with file:// protocol in auto_updater.
+        let localUrl = 'file://' + localFile
+        auto_updater.setFeedUrl(localUrl)
+
+        cb(null, true)
       })
     })
   }
