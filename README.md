@@ -32,9 +32,16 @@ update.check(function (err, update) {
 
 ### Methods
 
-#### check()
+#### check(callback)
+> Checks for new releases on Github.
+
+##### callback
+`err` - *String* Contains errors, if any.
+
+`status` - *bool* Is true if a new version is available.
 
 #### download()
+> Runs Electrons checkForUpdates() method. This method should only be called if check() returns true.
 
 ## License
 MIT
