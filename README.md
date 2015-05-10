@@ -21,8 +21,8 @@ var update = new gh_releases({repo: 'jenslind/electron-gh-releases'}, app, funct
 })
 
 // Check for updates
-update.check(function (err, update) {
-  if (!err && update) {
+update.check(function (err, status) {
+  if (!err && status) {
     update.download()
   }
 })
@@ -36,9 +36,9 @@ update.check(function (err, update) {
 > Checks for new releases on Github.
 
 ##### callback
-`err` - *String* Contains errors, if any.
+`err` - **String** Contains errors, if any.
 
-`status` - *bool* Is true if a new version is available.
+`status` - **Boolean** Is true if a new version is available.
 
 #### download()
 > Runs Electrons checkForUpdates() method. This method should only be called if check() returns true.
