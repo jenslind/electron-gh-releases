@@ -135,4 +135,5 @@ var Update = (function () {
   return Update;
 })();
 
-exports.Update = Update;
+exports['default'] = Update;
+module.exports = exports['default'];

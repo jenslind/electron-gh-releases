@@ -4,7 +4,7 @@ const path = require('path')
 const auto_updater = require('auto-updater')
 const got = require('got')
 
-export class Update {
+export default class Update {
 
   constructor (gh, app, cb) {
     this.repo = gh.repo
