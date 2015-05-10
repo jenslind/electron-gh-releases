@@ -7,7 +7,7 @@ OS X only
 
 1. Publish a new release on Github, the tag needs to be a valid semver version.
 2. Add your `.zip` file to your release.
-3. Next also add a `auto_updater.json` file. This file should contain at least a `url` key pointing to the `.zip` file URL. Look [here](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#update-json-format) for valid keys.
+3. Next also add a `auto_updater.json` file. This file should contain at least a `url` key pointing to the `.zip` file URL. The URL will be `https://github.com/USERNAME/REPO/releases/download/TAG/FILENAME.zip` Look [here](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#update-json-format) for valid keys.
 
 ```javascript
 var gh_releases = require('electron-gh-releases')
