@@ -1,16 +1,6 @@
 ## [WIP] Electron-gh-releases [![Build Status](https://travis-ci.org/jenslind/electron-gh-releases.svg?branch=master)](https://travis-ci.org/jenslind/electron-gh-releases) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 > Auto-update for electron apps using Github releases.
 
-#### Zip file naming
-The zip file uploaded on Github must be named in a special way
-```
-REPO_NAME-VERSION_TAG-PLATFORM-ARCH.zip
-```
-example:
-```
-electron-gh-releases-v1.0.0-darwin-x64.zip
-```
-
 #### Usage
 ```javascript
 var gh_releases = require('electron-gh-releases')
