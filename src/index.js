@@ -2,14 +2,12 @@ const semver = require('semver')
 const path = require('path')
 const auto_updater = require('auto-updater')
 const got = require('got')
-const rimraf = require('rimraf')
 
 export default class Update {
 
   constructor (gh, app, cb) {
     this.repo = gh.repo
     this.repoUrl = 'https://github.com/' + gh.repo
-    this.storage = app.getPath('userData')
     this.currentVersion = app.getVersion()
 
     cb(auto_updater)
@@ -19,8 +17,6 @@ export default class Update {
    * Get tags from this.repo
    */
   _getLatestTag (cb) {
-    var self = this
-
     let url = path.join(this.repoUrl, '/releases/latest')
     got.head(url, function (err, data, res) {
       if (err) {

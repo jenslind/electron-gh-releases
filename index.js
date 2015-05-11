@@ -12,7 +12,6 @@ var semver = require('semver');
 var path = require('path');
 var auto_updater = require('auto-updater');
 var got = require('got');
-var rimraf = require('rimraf');
 
 var Update = (function () {
   function Update(gh, app, cb) {
@@ -20,7 +19,6 @@ var Update = (function () {
 
     this.repo = gh.repo;
     this.repoUrl = 'https://github.com/' + gh.repo;
-    this.storage = app.getPath('userData');
     this.currentVersion = app.getVersion();
 
     cb(auto_updater);
@@ -33,8 +31,6 @@ var Update = (function () {
      * Get tags from this.repo
      */
     value: function _getLatestTag(cb) {
-      var self = this;
-
       var url = path.join(this.repoUrl, '/releases/latest');
       got.head(url, function (err, data, res) {
         if (err) {

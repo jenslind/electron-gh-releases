@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "got": "^3.2.0",
-    "rimraf": "^2.3.3",
     "semver": "^4.3.4"
   },
   "standard": {
