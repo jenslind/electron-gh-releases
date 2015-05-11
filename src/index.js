@@ -1,5 +1,4 @@
 const semver = require('semver')
-const path = require('path')
 const auto_updater = require('auto-updater')
 const got = require('got')
 
@@ -71,13 +70,20 @@ export default class Update {
 
       // There is a new version!
 
-      // 3. Get feed url from gh release.
-      let feedUrl = 'https://github.com/' + self.repo + '/releases/download/' + latest + '/auto_updater.json'
+      // 3. Get feed url from gh repo.
+      let feedUrl = 'https://raw.githubusercontent.com/' + self.repo + '/master/auto_updater.json'
 
       // 4. Make sure feedUrl exists
-      got.head(feedUrl, function (err, data, res) {
+      got.get(feedUrl, function (err, data, res) {
         if (err || res.statusCode !== 200) {
           cb(new Error('Could not get feed URL.'), false)
+          return
+        }
+
+        // Make sure the feedUrl links to latest tag
+        let zipUrl = JSON.parse(data).url
+        if (zipUrl.split('/').slice(-2, -1)[0] !== latest) {
+          cb(new Error('Url from auto_updater.json does not linking to latest release.'), false)
           return
         }
 
