@@ -10,10 +10,10 @@ A `auto_updater.json` file needs to be placed in the root of your repo.
 This file should contain at least a `url` key, pointing to the `.zip` file URL in your latest release.
 Look [here](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#update-json-format) for valid keys.
 
-#### When publishing a new release
+#### When publishing a new release on Github
 
 1. The tag needs to be a valid semver version.
-2. Add your `.zip` file to your release.
+2. Your `.app` must be [signed](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#auto-updater) and `zip` compressed.
 
 #### Checking and installing updates
 
@@ -45,23 +45,29 @@ update.check(function (err, status) {
 
 ### Constructor
 
-#### options
+#### new gh_releases([options], [callback])
+
+##### options
 
 `repo` - **String** Your github repo in the format: USERNAME/REPO_NAME
 
 `currentVersion` - **Semver version**
 
+##### callback(auto_updater)
+
+Returns the auto_updater object.
+
 ### Methods
 
-#### check(callback)
+#### .check([callback])
 > Checks for new releases on Github.
 
-##### callback
+##### callback(err, status)
 `err` - **String** Contains errors, if any.
 
 `status` - **Boolean** Is true if a new version is available.
 
-#### download()
+#### .download()
 > Runs Electrons [checkForUpdates()](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#autoupdatercheckforupdates) method. This method should only be called if check() returns true.
 
 ## License
