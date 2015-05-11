@@ -40,6 +40,7 @@ update.check(function (err, status) {
 #### options
 
 `repo` - **String** Your github repo in the format: USERNAME/REPO_NAME
+
 `currentVersion` - **Semver version**
 
 ### Methods
