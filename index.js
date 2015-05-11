@@ -31,7 +31,7 @@ var Update = (function () {
      * Get tags from this.repo
      */
     value: function _getLatestTag(cb) {
-      var url = path.join(this.repoUrl, '/releases/latest');
+      var url = this.repoUrl + '/releases/latest';
       got.head(url, function (err, data, res) {
         if (err) {
           cb('Unable to get latest release tag from Github.', null);

@@ -17,7 +17,7 @@ export default class Update {
    * Get tags from this.repo
    */
   _getLatestTag (cb) {
-    let url = path.join(this.repoUrl, '/releases/latest')
+    let url = this.repoUrl + '/releases/latest'
     got.head(url, function (err, data, res) {
       if (err) {
         cb('Unable to get latest release tag from Github.', null)
