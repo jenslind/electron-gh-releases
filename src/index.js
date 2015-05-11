@@ -1,4 +1,3 @@
-const exec = require('child_process').exec
 const semver = require('semver')
 const path = require('path')
 const auto_updater = require('auto-updater')
@@ -9,7 +8,7 @@ export default class Update {
 
   constructor (gh, app, cb) {
     this.repo = gh.repo
-    this.repoUrl = 'git@github.com:' + gh.repo + '.git'
+    this.repoUrl = 'https://github.com/' + gh.repo
     this.storage = app.getPath('userData')
     this.currentVersion = app.getVersion()
 
@@ -19,35 +18,18 @@ export default class Update {
   /**
    * Get tags from this.repo
    */
-  _getTags (cb) {
+  _getLatestTag (cb) {
     var self = this
 
-    // Clone repo
-    exec('git clone ' + this.repoUrl, {cwd: this.storage}, function (err, stdout, stderr) {
+    let url = path.join(this.repoUrl, '/releases/latest')
+    got.head(url, function (err, data, res) {
       if (err) {
-        cb(new Error('Failed to clone repo.'), null)
+        cb('Unable to get latest release tag from Github.', null)
         return
       }
 
-      // Get latest tags
-      exec('git tag', {cwd: path.join(self.storage, self.repo.split('/').pop())}, function (err, stdout, stderr) {
-        if (err) {
-          cb(new Error('Unable to get version tags.'), null)
-          return
-        }
-        var tags = stdout.split('\n')
-        tags.pop()
-
-        // Cleanup time, remove cloned repo.
-        rimraf(path.join(self.storage, self.repo.split('/').pop()), function (err) {
-          if (err) {
-            cb(new Error('Unable to remove cloned repo.'), null)
-            return
-          }
-
-          cb(err, tags)
-        })
-      })
+      let latestTag = res.req.path.split('/').pop()
+      cb(err, latestTag)
     })
   }
 
@@ -64,13 +46,13 @@ export default class Update {
   check (cb) {
     var self = this
     // 1. Get latest released version from Github.
-    this._getTags(function (err, tags) {
+    this._getLatestTag(function (err, tag) {
       if (err) {
         cb(new Error(err), false)
         return
       }
 
-      if (!tags) {
+      if (!tag) {
         cb(null, false)
         return
       }
@@ -78,9 +60,8 @@ export default class Update {
       // Get the latest version
       let current = self._getCurrentVersion()
 
-      // Get latest tag
-      // @TODO: Sort the tags!
-      let latest = tags.pop()
+      // Check if tag is valid semver
+      let latest = tag
       if (!latest || !semver.valid(semver.clean(latest))) {
         cb(new Error('Could not find a valid release tag.'), false)
         return
