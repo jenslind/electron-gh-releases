@@ -14,12 +14,12 @@ var auto_updater = require('auto-updater');
 var got = require('got');
 
 var Update = (function () {
-  function Update(gh, app, cb) {
+  function Update(gh, cb) {
     _classCallCheck(this, Update);
 
     this.repo = gh.repo;
     this.repoUrl = 'https://github.com/' + gh.repo;
-    this.currentVersion = app.getVersion();
+    this.currentVersion = gh.currentVersion;
 
     cb(auto_updater);
   }

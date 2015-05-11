@@ -12,7 +12,12 @@ OS X only
 ```javascript
 var gh_releases = require('electron-gh-releases')
 
-var update = new gh_releases({repo: 'jenslind/electron-gh-releases'}, app, function (auto_updater) {
+var options = {
+  repo: 'jenslind/electron-gh-releases',
+  currentVersion: app.getVersion()
+}
+
+var update = new gh_releases(options, function (auto_updater) {
   // Auto updater event listener
   auto_updater.on('update-downloaded', function (e, rNotes, rName, rDate, uUrl, quitAndUpdate) {
     // Install the update

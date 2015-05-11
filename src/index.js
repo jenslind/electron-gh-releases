@@ -5,10 +5,10 @@ const got = require('got')
 
 export default class Update {
 
-  constructor (gh, app, cb) {
+  constructor (gh, cb) {
     this.repo = gh.repo
     this.repoUrl = 'https://github.com/' + gh.repo
-    this.currentVersion = app.getVersion()
+    this.currentVersion = gh.currentVersion
 
     cb(auto_updater)
   }
