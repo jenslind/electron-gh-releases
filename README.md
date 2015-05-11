@@ -55,7 +55,7 @@ update.check(function (err, status) {
 
 ##### callback(auto_updater)
 
-Returns the auto_updater object.
+Returns the auto_updater instance.
 
 ### Methods
 
