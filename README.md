@@ -35,6 +35,13 @@ update.check(function (err, status) {
 
 ## Docs
 
+### Constructor
+
+#### options
+
+`repo` - **String** Your github repo in the format: USERNAME/REPO_NAME
+`currentVersion` - **Semver version**
+
 ### Methods
 
 #### check(callback)
