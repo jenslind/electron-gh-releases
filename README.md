@@ -5,7 +5,7 @@
 
 #### auto_updater.json
 
-A `auto_updater.json` file needs to be placed in the root of your repo.
+A file named `auto_updater.json` needs to be placed in the root of your repo.
 
 This file should contain at least a `url` key, pointing to the `.zip` file URL in your latest release.
 Look [here](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#update-json-format) for valid keys.
