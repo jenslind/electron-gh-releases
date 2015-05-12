@@ -5,7 +5,9 @@ This is OS X only.
 
 ## Install
 
-`npm install electron-gh-releases --save`
+```
+npm install electron-gh-releases --save
+```
 
 ## Usage
 
