@@ -1,5 +1,11 @@
-# [WIP] Electron-gh-releases [![Build Status](https://travis-ci.org/jenslind/electron-gh-releases.svg?branch=master)](https://travis-ci.org/jenslind/electron-gh-releases) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+# Electron-gh-releases [![Build Status](https://travis-ci.org/jenslind/electron-gh-releases.svg?branch=master)](https://travis-ci.org/jenslind/electron-gh-releases) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 > Auto-update for electron apps using Github releases together with the built-in [auto-updater](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md).
+
+This is OS X only.
+
+## Install
+
+`npm install electron-gh-releases --save`
 
 ## Usage
 
