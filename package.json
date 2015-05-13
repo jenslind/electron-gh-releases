@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "Electron auto-update by releasing on Github.",
   "devDependencies": {
+    "electron-prebuilt": "^0.26.0",
     "grunt": "^0.4.5",
     "grunt-babel": "^5.0.0",
     "grunt-contrib-watch": "^0.6.1",
+    "mocha": "^2.2.4",
     "standard": "^3.7.3"
   },
   "dependencies": {
@@ -15,7 +17,8 @@
   "standard": {
     "ignore": [
       "index.js",
-      "Gruntfile.js"
+      "Gruntfile.js",
+      "test/**/*"
     ]
   },
   "scripts": {

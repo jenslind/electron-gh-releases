@@ -78,5 +78,17 @@ Returns the auto_updater instance.
 #### .download()
 > Runs Electrons [checkForUpdates()](https://github.com/atom/electron/blob/master/docs/api/auto-updater.md#autoupdatercheckforupdates) method. This method should only be called if check() returns true.
 
+## Tests
+
+```
+npm test
+```
+Runs `standard`
+
+```
+electron test/app
+```
+Runs unit tests
+
 ## License
 MIT
