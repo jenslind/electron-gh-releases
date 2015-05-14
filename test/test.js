@@ -33,7 +33,9 @@ describe('Update', function () {
 
   describe('_compareVersions()', function () {
     it('should compare latest to current version', function (done) {
-      assert(false)
+      assert(!update._compareVersions(update._getCurrentVersion(), '1.0.0'))
+      assert(!update._compareVersions(update._getCurrentVersion(), '1.0.0'))
+      assert(update._compareVersions(update._getCurrentVersion(), '2.0.0'))
       done()
     })
   })
