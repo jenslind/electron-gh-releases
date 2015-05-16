@@ -67,7 +67,7 @@ var Update = (function () {
      */
     value: function check(cb) {
       var self = this;
-      // 1. Get latest released version from Github.
+      // Get latest released version from Github.
       this._getLatestTag(function (err, tag) {
         if (err) {
           cb(new Error(err), false);
@@ -86,15 +86,15 @@ var Update = (function () {
           return;
         }
 
-        // 2. Compare with current version.
+        // Compare with current version.
         if (!this._newVersion(latest)) return cb(null, false);
 
         // There is a new version!
 
-        // 3. Get feed url from gh repo.
+        // Get feed url from gh repo.
         var feedUrl = 'https://raw.githubusercontent.com/' + self.repo + '/master/auto_updater.json';
 
-        // 4. Make sure feedUrl exists
+        // Make sure feedUrl exists
         got.get(feedUrl, function (err, data, res) {
           if (err || res.statusCode !== 200) {
             cb(new Error('Could not get feed URL.'), false);
@@ -108,7 +108,7 @@ var Update = (function () {
             return;
           }
 
-          // 5. Set feedUrl in auto_updater.
+          // Set feedUrl in auto_updater.
           auto_updater.setFeedUrl(feedUrl);
 
           cb(null, true);
