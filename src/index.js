@@ -36,6 +36,13 @@ export default class Update {
   }
 
   /**
+   * Compare current with the latest version.
+   */
+  _newVersion (latest) {
+    return semver.lt(this._getCurrentVersion(), latest)
+  }
+
+  /**
    * Check for updates.
    */
   check (cb) {
@@ -52,9 +59,6 @@ export default class Update {
         return
       }
 
-      // Get the latest version
-      let current = self._getCurrentVersion()
-
       // Check if tag is valid semver
       let latest = tag
       if (!latest || !semver.valid(semver.clean(latest))) {
@@ -63,10 +67,7 @@ export default class Update {
       }
 
       // 2. Compare with current version.
-      if (semver.lte(latest, current)) {
-        cb(null, false)
-        return
-      }
+      if (!this._newVersion(latest)) return cb(null, false)
 
       // There is a new version!
 

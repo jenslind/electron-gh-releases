@@ -51,6 +51,15 @@ var Update = (function () {
       return this.currentVersion;
     }
   }, {
+    key: '_newVersion',
+
+    /**
+     * Compare current with the latest version.
+     */
+    value: function _newVersion(latest) {
+      return semver.lt(this._getCurrentVersion(), latest);
+    }
+  }, {
     key: 'check',
 
     /**
@@ -70,9 +79,6 @@ var Update = (function () {
           return;
         }
 
-        // Get the latest version
-        var current = self._getCurrentVersion();
-
         // Check if tag is valid semver
         var latest = tag;
         if (!latest || !semver.valid(semver.clean(latest))) {
@@ -81,10 +87,7 @@ var Update = (function () {
         }
 
         // 2. Compare with current version.
-        if (semver.lte(latest, current)) {
-          cb(null, false);
-          return;
-        }
+        if (!this._newVersion(latest)) return cb(null, false);
 
         // There is a new version!
 
