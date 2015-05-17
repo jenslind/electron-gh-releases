@@ -74,7 +74,7 @@ var Update = (function () {
 
         // Make sure the feedUrl links to latest tag
         var zipUrl = JSON.parse(data).url;
-        if (zipUrl.split('/').slice(-2, -1)[0] !== latest) {
+        if (semver.clean(zipUrl.split('/').slice(-2, -1)[0]) !== semver.clean(latest)) {
           return cb('Url from auto_updater.json does not linking to latest release.', null);
         }
 
