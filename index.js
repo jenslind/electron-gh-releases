@@ -60,6 +60,28 @@ var Update = (function () {
       return semver.lt(this._getCurrentVersion(), latest);
     }
   }, {
+    key: '_getFeedUrl',
+
+    /**
+     * Get the feed URL from this.repo
+     */
+    value: function _getFeedUrl(latest, cb) {
+      var feedUrl = 'https://raw.githubusercontent.com/' + this.repo + '/master/auto_updater.json';
+
+      // Make sure feedUrl exists
+      got.get(feedUrl, function (err, data, res) {
+        if (err || res.statusCode !== 200) return cb('Could not get feed URL.', null);
+
+        // Make sure the feedUrl links to latest tag
+        var zipUrl = JSON.parse(data).url;
+        if (zipUrl.split('/').slice(-2, -1)[0] !== latest) {
+          return cb('Url from auto_updater.json does not linking to latest release.', null);
+        }
+
+        cb(err, feedUrl);
+      });
+    }
+  }, {
     key: 'check',
 
     /**
@@ -87,26 +109,12 @@ var Update = (function () {
         }
 
         // Compare with current version.
-        if (!this._newVersion(latest)) return cb(null, false);
+        if (!self._newVersion(latest)) return cb(null, false);
 
         // There is a new version!
-
         // Get feed url from gh repo.
-        var feedUrl = 'https://raw.githubusercontent.com/' + self.repo + '/master/auto_updater.json';
-
-        // Make sure feedUrl exists
-        got.get(feedUrl, function (err, data, res) {
-          if (err || res.statusCode !== 200) {
-            cb(new Error('Could not get feed URL.'), false);
-            return;
-          }
-
-          // Make sure the feedUrl links to latest tag
-          var zipUrl = JSON.parse(data).url;
-          if (zipUrl.split('/').slice(-2, -1)[0] !== latest) {
-            cb(new Error('Url from auto_updater.json does not linking to latest release.'), false);
-            return;
-          }
+        self._getFeedUrl(latest, function (err, feedUrl) {
+          if (err) return cb(new Error(err), false);
 
           // Set feedUrl in auto_updater.
           auto_updater.setFeedUrl(feedUrl);

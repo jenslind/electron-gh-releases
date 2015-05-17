@@ -43,6 +43,26 @@ export default class Update {
   }
 
   /**
+   * Get the feed URL from this.repo
+   */
+  _getFeedUrl (latest, cb) {
+    let feedUrl = 'https://raw.githubusercontent.com/' + this.repo + '/master/auto_updater.json'
+
+    // Make sure feedUrl exists
+    got.get(feedUrl, function (err, data, res) {
+      if (err || res.statusCode !== 200) return cb('Could not get feed URL.', null)
+
+      // Make sure the feedUrl links to latest tag
+      let zipUrl = JSON.parse(data).url
+      if (zipUrl.split('/').slice(-2, -1)[0] !== latest) {
+        return cb('Url from auto_updater.json does not linking to latest release.', null)
+      }
+
+      cb(err, feedUrl)
+    })
+  }
+
+  /**
    * Check for updates.
    */
   check (cb) {
@@ -67,26 +87,12 @@ export default class Update {
       }
 
       // Compare with current version.
-      if (!this._newVersion(latest)) return cb(null, false)
+      if (!self._newVersion(latest)) return cb(null, false)
 
       // There is a new version!
-
       // Get feed url from gh repo.
-      let feedUrl = 'https://raw.githubusercontent.com/' + self.repo + '/master/auto_updater.json'
-
-      // Make sure feedUrl exists
-      got.get(feedUrl, function (err, data, res) {
-        if (err || res.statusCode !== 200) {
-          cb(new Error('Could not get feed URL.'), false)
-          return
-        }
-
-        // Make sure the feedUrl links to latest tag
-        let zipUrl = JSON.parse(data).url
-        if (zipUrl.split('/').slice(-2, -1)[0] !== latest) {
-          cb(new Error('Url from auto_updater.json does not linking to latest release.'), false)
-          return
-        }
+      self._getFeedUrl(latest, function (err, feedUrl) {
+        if (err) return cb(new Error(err), false)
 
         // Set feedUrl in auto_updater.
         auto_updater.setFeedUrl(feedUrl)
