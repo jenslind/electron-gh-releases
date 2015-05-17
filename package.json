@@ -22,7 +22,8 @@
     ]
   },
   "scripts": {
-    "test": "standard"
+    "test": "standard && electron test/app",
+    "travis": "standard"
   },
   "author": "Jens Lind <jens@jensl.se> (jenslind.org)",
   "license": "MIT",

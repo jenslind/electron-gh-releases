@@ -83,12 +83,6 @@ Returns the auto_updater instance.
 ```
 npm test
 ```
-Runs `standard`
-
-```
-electron test/app
-```
-Runs unit tests
 
 ## License
 MIT
