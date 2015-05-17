@@ -39,10 +39,12 @@ describe('Update', function () {
     })
   })
 
-  describe('_getFeedURL()', function () {
+  describe('_getFeedUrl()', function () {
     it('should make sure feed url exists', function (done) {
-      assert(false)
-      done()
+      update._getFeedUrl('0.4.0', function (err, feedUrl) {
+        assert(!err)
+        done()
+      })
     })
   })
 })
