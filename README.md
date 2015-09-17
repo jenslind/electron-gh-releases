@@ -11,6 +11,10 @@ npm install --save electron-gh-releases
 
 ## Usage
 
+**Tip**
+
+Use [electron-publish-release](https://github.com/jenslind/electron-publish-release) to publish new releases to Github from the CLI.
+
 #### auto_updater.json
 
 A file named `auto_updater.json` needs to be placed in the root of your repo.
