@@ -55,7 +55,7 @@ export default class Update {
       // Make sure the feedUrl links to latest tag
       let zipUrl = JSON.parse(data).url
       if (semver.clean(zipUrl.split('/').slice(-2, -1)[0]) !== semver.clean(latest)) {
-        return cb('Url from auto_updater.json does not linking to latest release.', null)
+        return cb('URL from auto_updater.json does not link to latest release.', null)
       }
 
       cb(err, feedUrl)
