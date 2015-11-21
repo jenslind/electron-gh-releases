@@ -1,6 +1,6 @@
 {
   "name": "electron-gh-releases",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Electron auto-update by releasing on Github.",
   "main": "./GhReleases.js",
   "devDependencies": {
