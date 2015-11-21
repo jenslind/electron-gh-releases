@@ -14,8 +14,8 @@
     "standard": "^5.4.1"
   },
   "dependencies": {
-    "got": "^3.2.0",
-    "semver": "^4.3.4"
+    "got": "^5.1.0",
+    "semver": "^5.1.0"
   },
   "standard": {
     "ignore": [
