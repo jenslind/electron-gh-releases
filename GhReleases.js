@@ -19,6 +19,7 @@ var events = require('events');
 
 var WIN32 = process.platform === 'win32';
 var DARWIN = process.platform === 'darwin';
+var REGEX_ZIP_URL = /\/v(\d+\.\d+\.\d+)\/.*\.zip/;
 
 var GhReleases = (function (_events$EventEmitter) {
   _inherits(GhReleases, _events$EventEmitter);
@@ -118,7 +119,12 @@ var GhReleases = (function (_events$EventEmitter) {
           throw new Error('Unable to parse the auto_updater.json: ' + err.message + ', body: ' + res.body);
         }
 
-        var versionInZipUrl = semver.clean(zipUrl.split('/').slice(-2, -1)[0]);
+        var matchReleaseUrl = zipUrl.match(REGEX_ZIP_URL);
+        if (!matchReleaseUrl) {
+          throw new Error('The zipUrl (' + versionInZipUrl + ') is a invalid release URL');
+        }
+
+        var versionInZipUrl = matchReleaseUrl[1];
         var currentVersion = semver.clean(tag);
         if (versionInZipUrl !== currentVersion) {
           throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; currentVersion=' + currentVersion + ')');
