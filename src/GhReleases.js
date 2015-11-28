@@ -70,18 +70,26 @@ export default class GhReleases extends events.EventEmitter {
     // Make sure feedUrl exists
     return got.get(feedUrl)
       .then(res => {
-        if (res.statusCode !== 200) throw new Error()
+        if (res.statusCode === 404) {
+          throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.')
+        } else if (res.statusCode !== 200) {
+          throw new Error('Unable to fetch auto_updater.json: ' + res.body)
+        }
 
-        // Make sure the feedUrl links to latest tag
-        let zipUrl = JSON.parse(res.body).url
-        if (semver.clean(zipUrl.split('/').slice(-2, -1)[0]) !== semver.clean(tag)) {
-          throw new Error()
+        let zipUrl;
+        try {
+          zipUrl = JSON.parse(res.body).url
+        } catch (err) {
+          throw new Error('Unable to parse the auto_updater.json: ' + err.message + ', body: ' + res.body)
+        }
+
+        const versionInZipUrl = semver.clean(zipUrl.split('/').slice(-2, -1)[0])
+        const currentVersion = semver.clean(tag);
+        if (versionInZipUrl !== currentVersion) {
+          throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; currentVersion=' + currentVersion + ')')
         }
 
         return feedUrl
-      })
-      .catch(err => {
-        if (err) throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.')
       })
   }
 

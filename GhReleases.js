@@ -26,9 +26,9 @@ var GhReleases = (function (_events$EventEmitter) {
   function GhReleases(gh) {
     _classCallCheck(this, GhReleases);
 
-    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(GhReleases).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GhReleases).call(this));
 
-    var self = _this3;
+    var self = _this;
 
     self.repo = gh.repo;
     self.repoUrl = 'https://github.com/' + gh.repo;
@@ -42,7 +42,7 @@ var GhReleases = (function (_events$EventEmitter) {
 
       return self.emit('update-downloaded', args);
     });
-    return _this3;
+    return _this;
   }
 
   /**
@@ -88,14 +88,14 @@ var GhReleases = (function (_events$EventEmitter) {
   }, {
     key: '_getFeedUrl',
     value: function _getFeedUrl(tag) {
-      var _this = this;
+      var _this2 = this;
 
       var feedUrl = undefined;
 
       // If on Windows
       if (WIN32) {
         return new Promise(function (resolve, reject) {
-          feedUrl = _this.repoUrl + '/releases/download/' + tag;
+          feedUrl = _this2.repoUrl + '/releases/download/' + tag;
           resolve(feedUrl);
         });
       }
@@ -105,17 +105,26 @@ var GhReleases = (function (_events$EventEmitter) {
 
       // Make sure feedUrl exists
       return got.get(feedUrl).then(function (res) {
-        if (res.statusCode !== 200) throw new Error();
+        if (res.statusCode === 404) {
+          throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.');
+        } else if (res.statusCode !== 200) {
+          throw new Error('Unable to fetch auto_updater.json: ' + res.body);
+        }
 
-        // Make sure the feedUrl links to latest tag
-        var zipUrl = JSON.parse(res.body).url;
-        if (semver.clean(zipUrl.split('/').slice(-2, -1)[0]) !== semver.clean(tag)) {
-          throw new Error();
+        var zipUrl = undefined;
+        try {
+          zipUrl = JSON.parse(res.body).url;
+        } catch (err) {
+          throw new Error('Unable to parse the auto_updater.json: ' + err.message + ', body: ' + res.body);
+        }
+
+        var versionInZipUrl = semver.clean(zipUrl.split('/').slice(-2, -1)[0]);
+        var currentVersion = semver.clean(tag);
+        if (versionInZipUrl !== currentVersion) {
+          throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; currentVersion=' + currentVersion + ')');
         }
 
         return feedUrl;
-      }).catch(function (err) {
-        if (err) throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.');
       });
     }
 
@@ -126,7 +135,7 @@ var GhReleases = (function (_events$EventEmitter) {
   }, {
     key: 'check',
     value: function check(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!DARWIN && !WIN32) return cb(new Error('This platform is not supported.'), false);
 
@@ -149,7 +158,7 @@ var GhReleases = (function (_events$EventEmitter) {
         return self._getFeedUrl(tag);
       }).then(function (feedUrl) {
         // Set feedUrl in auto_updater.
-        _this2.autoUpdater.setFeedURL(feedUrl);
+        _this3.autoUpdater.setFeedURL(feedUrl);
 
         cb(null, true);
       }).catch(function (err) {
