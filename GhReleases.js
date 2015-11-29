@@ -107,7 +107,7 @@ var GhReleases = (function (_events$EventEmitter) {
       // Make sure feedUrl exists
       return got.get(feedUrl).then(function (res) {
         if (res.statusCode === 404) {
-          throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.');
+          throw new Error('auto_updater.json does not exist.');
         } else if (res.statusCode !== 200) {
           throw new Error('Unable to fetch auto_updater.json: ' + res.body);
         }
