@@ -121,7 +121,7 @@ var GhReleases = (function (_events$EventEmitter) {
 
         var matchReleaseUrl = zipUrl.match(REGEX_ZIP_URL);
         if (!matchReleaseUrl) {
-          throw new Error('The zipUrl (' + versionInZipUrl + ') is a invalid release URL');
+          throw new Error('The zipUrl (' + zipUrl + ') is a invalid release URL');
         }
 
         var versionInZipUrl = matchReleaseUrl[1];

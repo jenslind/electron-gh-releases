@@ -86,7 +86,7 @@ export default class GhReleases extends events.EventEmitter {
 
         const matchReleaseUrl = zipUrl.match(REGEX_ZIP_URL)
         if (!matchReleaseUrl) {
-          throw new Error('The zipUrl (' + versionInZipUrl + ') is a invalid release URL')
+          throw new Error('The zipUrl (' + zipUrl + ') is a invalid release URL')
         }
 
         const versionInZipUrl = matchReleaseUrl[1]
