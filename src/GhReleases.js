@@ -77,7 +77,7 @@ export default class GhReleases extends events.EventEmitter {
           throw new Error('Unable to fetch auto_updater.json: ' + res.body)
         }
 
-        let zipUrl;
+        let zipUrl
         try {
           zipUrl = JSON.parse(res.body).url
         } catch (err) {
@@ -90,7 +90,7 @@ export default class GhReleases extends events.EventEmitter {
         }
 
         const versionInZipUrl = matchReleaseUrl[1]
-        const currentVersion = semver.clean(tag);
+        const currentVersion = semver.clean(tag)
         if (versionInZipUrl !== currentVersion) {
           throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; currentVersion=' + currentVersion + ')')
         }
