@@ -17,16 +17,9 @@
     "got": "^5.1.0",
     "semver": "^5.1.0"
   },
-  "standard": {
-    "ignore": [
-      "GhReleases.js",
-      "gulpfile.js",
-      "test/**/*"
-    ]
-  },
   "scripts": {
-    "test": "standard && electron test/app",
-    "travis": "standard"
+    "test": "standard src/*.js && electron test/app",
+    "travis": "standard src/*.js"
   },
   "author": "Jens Lind <jens@jensl.se> (jenslind.org)",
   "license": "MIT",
