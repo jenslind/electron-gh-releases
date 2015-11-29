@@ -90,9 +90,9 @@ export default class GhReleases extends events.EventEmitter {
         }
 
         const versionInZipUrl = matchReleaseUrl[1]
-        const currentVersion = semver.clean(tag)
-        if (versionInZipUrl !== currentVersion) {
-          throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; currentVersion=' + currentVersion + ')')
+        const latestVersion = semver.clean(tag)
+        if (versionInZipUrl !== latestVersion) {
+          throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; latestVersion=' + latestVersion + ')')
         }
 
         return feedUrl
