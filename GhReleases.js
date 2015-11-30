@@ -27,9 +27,9 @@ var GhReleases = (function (_events$EventEmitter) {
   function GhReleases(gh) {
     _classCallCheck(this, GhReleases);
 
-    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(GhReleases).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GhReleases).call(this));
 
-    var self = _this3;
+    var self = _this;
 
     self.repo = gh.repo;
     self.repoUrl = 'https://github.com/' + gh.repo;
@@ -43,7 +43,7 @@ var GhReleases = (function (_events$EventEmitter) {
 
       return self.emit('update-downloaded', args);
     });
-    return _this3;
+    return _this;
   }
 
   /**
@@ -89,14 +89,14 @@ var GhReleases = (function (_events$EventEmitter) {
   }, {
     key: '_getFeedUrl',
     value: function _getFeedUrl(tag) {
-      var _this = this;
+      var _this2 = this;
 
       var feedUrl = undefined;
 
       // If on Windows
       if (WIN32) {
         return new Promise(function (resolve, reject) {
-          feedUrl = _this.repoUrl + '/releases/download/' + tag;
+          feedUrl = _this2.repoUrl + '/releases/download/' + tag;
           resolve(feedUrl);
         });
       }
@@ -141,7 +141,7 @@ var GhReleases = (function (_events$EventEmitter) {
   }, {
     key: 'check',
     value: function check(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!DARWIN && !WIN32) return cb(new Error('This platform is not supported.'), false);
 
@@ -164,7 +164,7 @@ var GhReleases = (function (_events$EventEmitter) {
         return self._getFeedUrl(tag);
       }).then(function (feedUrl) {
         // Set feedUrl in auto_updater.
-        _this2.autoUpdater.setFeedURL(feedUrl);
+        _this3.autoUpdater.setFeedURL(feedUrl);
 
         cb(null, true);
       }).catch(function (err) {
