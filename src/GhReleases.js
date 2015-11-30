@@ -5,6 +5,7 @@ const events = require('events')
 
 const WIN32 = (process.platform === 'win32')
 const DARWIN = (process.platform === 'darwin')
+const REGEX_ZIP_URL = /\/v(\d+\.\d+\.\d+)\/.*\.zip/
 
 export default class GhReleases extends events.EventEmitter {
 
@@ -70,18 +71,31 @@ export default class GhReleases extends events.EventEmitter {
     // Make sure feedUrl exists
     return got.get(feedUrl)
       .then(res => {
-        if (res.statusCode !== 200) throw new Error()
+        if (res.statusCode === 404) {
+          throw new Error('auto_updater.json does not exist.')
+        } else if (res.statusCode !== 200) {
+          throw new Error('Unable to fetch auto_updater.json: ' + res.body)
+        }
 
-        // Make sure the feedUrl links to latest tag
-        let zipUrl = JSON.parse(res.body).url
-        if (semver.clean(zipUrl.split('/').slice(-2, -1)[0]) !== semver.clean(tag)) {
-          throw new Error()
+        let zipUrl
+        try {
+          zipUrl = JSON.parse(res.body).url
+        } catch (err) {
+          throw new Error('Unable to parse the auto_updater.json: ' + err.message + ', body: ' + res.body)
+        }
+
+        const matchReleaseUrl = zipUrl.match(REGEX_ZIP_URL)
+        if (!matchReleaseUrl) {
+          throw new Error('The zipUrl (' + zipUrl + ') is a invalid release URL')
+        }
+
+        const versionInZipUrl = matchReleaseUrl[1]
+        const latestVersion = semver.clean(tag)
+        if (versionInZipUrl !== latestVersion) {
+          throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; latestVersion=' + latestVersion + ')')
         }
 
         return feedUrl
-      })
-      .catch(err => {
-        if (err) throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.')
       })
   }
 

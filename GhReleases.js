@@ -19,6 +19,7 @@ var events = require('events');
 
 var WIN32 = process.platform === 'win32';
 var DARWIN = process.platform === 'darwin';
+var REGEX_ZIP_URL = /\/v(\d+\.\d+\.\d+)\/.*\.zip/;
 
 var GhReleases = (function (_events$EventEmitter) {
   _inherits(GhReleases, _events$EventEmitter);
@@ -105,17 +106,31 @@ var GhReleases = (function (_events$EventEmitter) {
 
       // Make sure feedUrl exists
       return got.get(feedUrl).then(function (res) {
-        if (res.statusCode !== 200) throw new Error();
+        if (res.statusCode === 404) {
+          throw new Error('auto_updater.json does not exist.');
+        } else if (res.statusCode !== 200) {
+          throw new Error('Unable to fetch auto_updater.json: ' + res.body);
+        }
 
-        // Make sure the feedUrl links to latest tag
-        var zipUrl = JSON.parse(res.body).url;
-        if (semver.clean(zipUrl.split('/').slice(-2, -1)[0]) !== semver.clean(tag)) {
-          throw new Error();
+        var zipUrl = undefined;
+        try {
+          zipUrl = JSON.parse(res.body).url;
+        } catch (err) {
+          throw new Error('Unable to parse the auto_updater.json: ' + err.message + ', body: ' + res.body);
+        }
+
+        var matchReleaseUrl = zipUrl.match(REGEX_ZIP_URL);
+        if (!matchReleaseUrl) {
+          throw new Error('The zipUrl (' + zipUrl + ') is a invalid release URL');
+        }
+
+        var versionInZipUrl = matchReleaseUrl[1];
+        var latestVersion = semver.clean(tag);
+        if (versionInZipUrl !== latestVersion) {
+          throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; latestVersion=' + latestVersion + ')');
         }
 
         return feedUrl;
-      }).catch(function (err) {
-        if (err) throw new Error('auto_updater.json does not exist or does not links to the latest GitHub release.');
       });
     }
 
