@@ -6,35 +6,37 @@ describe('GhReleases', function () {
   this.timeout(5000)
 
   var updater = null
-
+  var options = {
+    repo: 'gitscout/downloadtest',
+    currentVersion: '0.1.0'
+  }
+  // var options = {
+  //   repo: 'jenslind/electron-gh-releases-test',
+  //   currentVersion: '1.0.0'
+  // }
   before(function () {
-    var options = {
-      repo: 'jenslind/electron-gh-releases-test',
-      currentVersion: '1.0.0'
-    }
-
     updater = new GhReleases(options)
   })
 
   describe('_getLatestTag()', function () {
     it('should get the latest release tag from the repo', function (done) {
-      updater._getLatestTag(function (err, tag) {
-        assert.equal(err, null)
-        assert(semver.valid(tag))
-        done()
-      })
+      updater._getLatestTag()
+        .then(function (tag) {
+          assert(semver.valid(tag))
+          done()
+        })
     })
   })
 
   describe('_getCurrentVersion()', function () {
     it('should get the current version', function () {
-      assert.equal(updater._getCurrentVersion(), '1.0.0')
+      assert.equal(updater._getCurrentVersion(), options.currentVersion)
     })
   })
 
   describe('_newVersion()', function () {
     it('should compare latest to current version', function (done) {
-      assert(!updater._newVersion('1.0.0'))
+      assert(!updater._newVersion(options.currentVersion))
       assert(updater._newVersion('2.0.0'))
       done()
     })
@@ -42,10 +44,10 @@ describe('GhReleases', function () {
 
   describe('_getFeedUrl()', function () {
     it('should make sure feed url exists', function (done) {
-      updater._getFeedUrl('0.4.0', function (err, feedUrl) {
-        assert(!err)
-        done()
-      })
+      updater._getFeedUrl('0.1.2')
+        .then(function (feedUrl) {
+          done()
+        })
     })
   })
 })
