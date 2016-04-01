@@ -5,9 +5,12 @@ var watch = require('gulp-watch')
 gulp.task('watch', function () {
   return gulp.src('src/*')
     .pipe(watch('src/*'))
-    .pipe(babel({
-      presets: ['es2015'],
-      plugins: ['add-module-exports']
-    }))
+    .pipe(babel())
+    .pipe(gulp.dest('./'))
+})
+
+gulp.task('build', function () {
+  return gulp.src('src/*')
+    .pipe(babel())
     .pipe(gulp.dest('./'))
 })
