@@ -3,7 +3,7 @@ var assert = require('assert')
 var semver = require('semver')
 
 describe('GhReleases', function () {
-  this.timeout(5000)
+  this.timeout(7000)
 
   var updater = null
 
@@ -18,11 +18,11 @@ describe('GhReleases', function () {
 
   describe('_getLatestTag()', function () {
     it('should get the latest release tag from the repo', function (done) {
-      updater._getLatestTag(function (err, tag) {
-        assert.equal(err, null)
-        assert(semver.valid(tag))
-        done()
-      })
+      updater._getLatestTag()
+        .then(function (tag) {
+          assert(semver.valid(tag))
+          done()
+        })
     })
   })
 
@@ -42,10 +42,11 @@ describe('GhReleases', function () {
 
   describe('_getFeedUrl()', function () {
     it('should make sure feed url exists', function (done) {
-      updater._getFeedUrl('0.4.0', function (err, feedUrl) {
-        assert(!err)
-        done()
-      })
+      updater._getFeedUrl('0.4.0')
+        .then(function (feedUrl) {
+          assert.equal(feedUrl, 'https://raw.githubusercontent.com/jenslind/electron-gh-releases-test/master/auto_updater.json')
+          done()
+        })
     })
   })
 })
