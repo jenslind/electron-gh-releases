@@ -5,7 +5,7 @@ const events = require('events')
 
 const WIN32 = (process.platform === 'win32')
 const DARWIN = (process.platform === 'darwin')
-const REGEX_ZIP_URL = /\/v(\d+\.\d+\.\d+)\/.*\.zip/
+const REGEX_ZIP_URL = /\/(v)?(\d+\.\d+\.\d+)\/.*\.zip/
 
 export default class GhReleases extends events.EventEmitter {
 
