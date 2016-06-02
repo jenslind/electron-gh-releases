@@ -5,7 +5,7 @@ const events = require('events')
 
 const WIN32 = (process.platform === 'win32')
 const DARWIN = (process.platform === 'darwin')
-const REGEX_ZIP_URL = /\/v(\d+\.\d+\.\d+)\/.*\.zip/
+const REGEX_ZIP_URL = /\/(v)?(\d+\.\d+\.\d+)\/.*\.zip/
 
 export default class GhReleases extends events.EventEmitter {
 
@@ -89,7 +89,7 @@ export default class GhReleases extends events.EventEmitter {
           throw new Error('The zipUrl (' + zipUrl + ') is a invalid release URL')
         }
 
-        const versionInZipUrl = matchReleaseUrl[1]
+        const versionInZipUrl = matchReleaseUrl[matchReleaseUrl.length -1]
         const latestVersion = semver.clean(tag)
         if (versionInZipUrl !== latestVersion) {
           throw new Error('The feedUrl does not link to latest tag (zipUrl=' + versionInZipUrl + '; latestVersion=' + latestVersion + ')')
