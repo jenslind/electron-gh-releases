@@ -103,8 +103,6 @@ export default class GhReleases extends events.EventEmitter {
    * Check for updates.
    */
   check (cb) {
-    if (!DARWIN && !WIN32) return cb(new Error('This platform is not supported.'), false)
-
     let self = this
 
     // Get latest released version from Github.
@@ -125,6 +123,8 @@ export default class GhReleases extends events.EventEmitter {
         return self._getFeedUrl(tag)
       })
       .then(feedUrl => {
+        if (!DARWIN && !WIN32) return cb(new Error('This platform is not supported.'), true)
+
         // Set feedUrl in auto_updater.
         this.autoUpdater.setFeedURL(feedUrl)
 
