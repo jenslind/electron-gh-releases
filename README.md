@@ -13,10 +13,6 @@ npm install --save electron-gh-releases
 
 [Usage example and API docs](https://github.com/jenslind/electron-gh-releases/tree/master/docs/2.x)
 
-## Tip
-
-Use [electron-release](https://github.com/jenslind/electron-release) to publish new releases to Github from the CLI.
-
 ## Tests
 
 ```
