@@ -60,7 +60,7 @@ describe('GhReleases', function () {
   //   it('should make sure feed url exists', function (done) {
   //     updater._getFeedUrl('0.4.0')
   //       .then(function (feedUrl) {
-  //         assert.equal(feedUrl, 'https://raw.githubusercontent.com/jenslind/electron-gh-releases-test/master/darwin/auto_updater.json')
+  //         assert.equal(feedUrl, 'https://raw.githubusercontent.com/jenslind/electron-gh-releases-test/master/osx/auto_updater.json')
   //         done()
   //       }).catch(err => console.log(err))
   //   })
