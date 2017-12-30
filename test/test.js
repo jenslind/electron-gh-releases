@@ -6,9 +6,10 @@ describe('GhReleases', function () {
   this.timeout(7000)
 
   var updater = null
+  var options = {}
 
   before(function () {
-    var options = {
+    options = {
       repo: 'jenslind/electron-gh-releases-test',
       currentVersion: '1.0.0'
     }
@@ -49,4 +50,19 @@ describe('GhReleases', function () {
         })
     })
   })
+
+  // describe('_getFeedUrl() with an autoUpdaterPath', function () {
+  //   before(function() {
+  //     updater = new GhReleases(
+  //       Object.assign(options, { autoUpdaterPath: 'osx' })
+  //     )
+  //   })
+  //   it('should make sure feed url exists', function (done) {
+  //     updater._getFeedUrl('0.4.0')
+  //       .then(function (feedUrl) {
+  //         assert.equal(feedUrl, 'https://raw.githubusercontent.com/jenslind/electron-gh-releases-test/master/darwin/auto_updater.json')
+  //         done()
+  //       }).catch(err => console.log(err))
+  //   })
+  // })
 })
