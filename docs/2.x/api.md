@@ -39,6 +39,8 @@ updater.autoUpdater
 
 `currentVersion` - **Semver version** The current version of the running app.
 
+`autoUpdaterPath` - the path to the `auto_updater.json` file (default: root)
+
 ### Methods
 
 #### `.check([callback])`

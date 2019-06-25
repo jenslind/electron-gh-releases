@@ -2,7 +2,7 @@ const semver = require('semver')
 const autoUpdater = require('electron').autoUpdater
 const got = require('got')
 const events = require('events')
-
+const path = require('path')
 const WIN32 = (process.platform === 'win32')
 const DARWIN = (process.platform === 'darwin')
 const REGEX_ZIP_URL = /\/(v)?(\d+\.\d+\.\d+)\/.*\.zip/
@@ -18,6 +18,7 @@ export default class GhReleases extends events.EventEmitter {
     self.repoUrl = 'https://github.com/' + gh.repo
     self.currentVersion = gh.currentVersion
     self.autoUpdater = autoUpdater
+    self.autoUpdaterPath = gh.autoUpdaterPath || ''
 
     self.autoUpdater.on('update-downloaded', (...args) => self.emit('update-downloaded', args))
   }
@@ -66,7 +67,15 @@ export default class GhReleases extends events.EventEmitter {
     }
 
     // On Mac we need to use the `auto_updater.json`
-    feedUrl = 'https://raw.githubusercontent.com/' + this.repo + '/master/auto_updater.json'
+    feedUrl = 'https://' +
+      path.join(
+        'raw.githubusercontent.com',
+        this.repo,
+        'master',
+        this.autoUpdaterPath,
+        'auto_updater.json'
+      )
+      console.log(feedUrl);
 
     // Make sure feedUrl exists
     return got.get(feedUrl)
