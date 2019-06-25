@@ -60,7 +60,7 @@ export default class GhReleases extends events.EventEmitter {
     // If on Windows
     if (WIN32) {
       return new Promise((resolve, reject) => {
-        feedUrl = this.repoUrl + '/releases/download/' + tag
+        feedUrl = this.repoUrl + '/releases/tag/' + tag
         resolve(feedUrl)
       })
     }
